@@ -44,23 +44,12 @@ func eq(i Instruction, vm LuaVM) { _compare(i, vm, LUA_OPEQ) } // ==
 func lt(i Instruction, vm LuaVM) { _compare(i, vm, LUA_OPLT) } // <
 func le(i Instruction, vm LuaVM) { _compare(i, vm, LUA_OPLE) } // <=
 
-//func _compare(i Instruction, vm LuaVM, op CompareOp) {
-//	a, b, c := i.ABC()
-//
-//	vm.GetRK(b)
-//	vm.GetRK(c)
-//	for vm.Compare(-2, -1, op) != (a != 0) {
-//		vm.AddPC(1)
-//	}
-//	vm.Pop(2)
-//}
-
 func _compare(i Instruction, vm LuaVM, op CompareOp) {
 	a, b, c := i.ABC()
 
 	vm.GetRK(b)
 	vm.GetRK(c)
-	if vm.Compare(-2, -1, op) != (a != 0) {
+	for vm.Compare(-2, -1, op) != (a != 0) {
 		vm.AddPC(1)
 	}
 	vm.Pop(2)
