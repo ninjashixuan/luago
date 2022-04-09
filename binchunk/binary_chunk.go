@@ -1,6 +1,5 @@
 package binchunk
 
-
 const (
 	LUA_SIGNATURE    = "\x1bLua"
 	LUAC_VERSION     = 0x53
