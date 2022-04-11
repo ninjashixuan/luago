@@ -49,7 +49,7 @@ func _compare(i Instruction, vm LuaVM, op CompareOp) {
 
 	vm.GetRK(b)
 	vm.GetRK(c)
-	for vm.Compare(-2, -1, op) != (a != 0) {
+	if vm.Compare(-2, -1, op) != (a != 0) {
 		vm.AddPC(1)
 	}
 	vm.Pop(2)

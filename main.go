@@ -32,7 +32,6 @@ func luaMain(proto *binchunk.Prototype) {
 	for {
 		pc := ls.PC()
 		inst := Instruction(ls.Fetch())
-		fmt.Printf("%04d %s\n", pc, inst.OpName())
 		if inst.Opcode() != OP_RETURN {
 			inst.Execute(ls)
 
