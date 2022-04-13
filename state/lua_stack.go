@@ -1,19 +1,23 @@
 package state
 
+import . "luago/api"
+
 type luaStack struct {
 	slots []luaValue
 	top   int
 
+	state   *luaState
 	prev    *luaStack
 	closure *closure
 	varargs []luaValue
 	pc      int
 }
 
-func newLuaStack(size int) *luaStack {
+func newLuaStack(size int, state *luaState) *luaStack {
 	return &luaStack{
 		slots: make([]luaValue, size),
 		top:   0,
+		state: state,
 	}
 }
 
@@ -45,6 +49,10 @@ func (self *luaStack) pop() luaValue {
 }
 
 func (self *luaStack) absIndex(idx int) int {
+	if idx <= LUA_REGISTRYINDEX {
+		return idx
+	}
+
 	if idx >= 0 {
 		return idx
 	}
@@ -53,11 +61,19 @@ func (self *luaStack) absIndex(idx int) int {
 }
 
 func (self *luaStack) isValid(idx int) bool {
+	if idx == LUA_REGISTRYINDEX {
+		return true
+	}
+
 	absIdx := self.absIndex(idx)
 	return absIdx > 0 && absIdx <= self.top
 }
 
 func (self *luaStack) get(idx int) luaValue {
+	if idx == LUA_REGISTRYINDEX {
+		return self.state.registry
+	}
+
 	absIdx := self.absIndex(idx)
 	if absIdx > 0 && absIdx <= self.top {
 		return self.slots[absIdx-1]
@@ -67,6 +83,11 @@ func (self *luaStack) get(idx int) luaValue {
 }
 
 func (self *luaStack) set(idx int, val luaValue) {
+	if idx == LUA_REGISTRYINDEX {
+		self.state.registry = val.(*luaTable)
+		return
+	}
+
 	absIdx := self.absIndex(idx)
 	if absIdx > 0 && absIdx <= self.top {
 		self.slots[absIdx-1] = val

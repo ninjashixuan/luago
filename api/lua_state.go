@@ -3,6 +3,7 @@ package api
 type LuaType = int
 type ArithOp = int
 type CompareOp = int
+type GoFunction func(LuaState) int
 
 type LuaState interface {
 	/* basic stack manipulation */
@@ -63,4 +64,13 @@ type LuaState interface {
 
 	Load(chunk []byte, chunkName, mode string) int
 	Call(nArgs, nResults int)
+
+	PushGoFunction(f GoFunction)
+	IsGoFunction(idx int) bool
+	ToGoFunction(idx int) GoFunction
+
+	PushGlobalTable()
+	SetGlobal(name string)
+	GetGlobal(name string) LuaType
+	Register(name string, f GoFunction)
 }
