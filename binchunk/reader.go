@@ -1,9 +1,7 @@
 package binchunk
 
-import (
-	"encoding/binary"
-	"math"
-)
+import "encoding/binary"
+import "math"
 
 type reader struct {
 	data []byte
@@ -46,7 +44,6 @@ func (self *reader) readString() string {
 	if size == 0 {
 		return ""
 	}
-
 	if size == 0xFF {
 		size = uint(self.readUint64()) // size_t
 	}

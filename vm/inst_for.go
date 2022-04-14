@@ -2,6 +2,7 @@ package vm
 
 import . "luago/api"
 
+// R(A)-=R(A+2); pc+=sBx
 func forPrep(i Instruction, vm LuaVM) {
 	a, sBx := i.AsBx()
 	a += 1
@@ -26,6 +27,10 @@ func forPrep(i Instruction, vm LuaVM) {
 	vm.AddPC(sBx)
 }
 
+// R(A)+=R(A+2);
+// if R(A) <?= R(A+1) then {
+//   pc+=sBx; R(A+3)=R(A)
+// }
 func forLoop(i Instruction, vm LuaVM) {
 	a, sBx := i.AsBx()
 	a += 1

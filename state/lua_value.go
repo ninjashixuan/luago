@@ -1,9 +1,10 @@
 package state
 
 import (
+	"fmt"
 	. "luago/api"
-	"luago/number"
 )
+import "luago/number"
 
 type luaValue interface{}
 
@@ -26,12 +27,24 @@ func typeOf(val luaValue) LuaType {
 	}
 }
 
+func convertToBoolean(val luaValue) bool {
+	switch x := val.(type) {
+	case nil:
+		return false
+	case bool:
+		return x
+	default:
+		return true
+	}
+}
+
+// http://www.lua.org/manual/5.3/manual.html#3.4.3
 func convertToFloat(val luaValue) (float64, bool) {
 	switch x := val.(type) {
-	case float64:
-		return x, true
 	case int64:
 		return float64(x), true
+	case float64:
+		return x, true
 	case string:
 		return number.ParseFloat(x)
 	default:
@@ -39,6 +52,7 @@ func convertToFloat(val luaValue) (float64, bool) {
 	}
 }
 
+// http://www.lua.org/manual/5.3/manual.html#3.4.3
 func convertToInteger(val luaValue) (int64, bool) {
 	switch x := val.(type) {
 	case int64:
@@ -46,13 +60,13 @@ func convertToInteger(val luaValue) (int64, bool) {
 	case float64:
 		return number.FloatToInteger(x)
 	case string:
-		return _stringToNumber(x)
+		return _stringToInteger(x)
 	default:
 		return 0, false
 	}
 }
 
-func _stringToNumber(s string) (int64, bool) {
+func _stringToInteger(s string) (int64, bool) {
 	if i, ok := number.ParseInteger(s); ok {
 		return i, true
 	}
@@ -60,4 +74,50 @@ func _stringToNumber(s string) (int64, bool) {
 		return number.FloatToInteger(f)
 	}
 	return 0, false
+}
+
+func setMetatable(val luaValue, mt *luaTable, ls *luaState) {
+	if t, ok := val.(*luaTable); ok {
+		t.metatable = mt
+		return
+	}
+
+	key := fmt.Sprintf("_MT%d", typeOf(val))
+	ls.registry.put(key, mt)
+}
+
+func getMetatable(val luaValue, ls *luaState) *luaTable {
+	if t, ok := val.(*luaTable); ok {
+		return t.metatable
+	}
+
+	key := fmt.Sprintf("_MT%d", typeOf(val))
+	if mt := ls.registry.get(key); mt != nil {
+		return mt.(*luaTable)
+	}
+	return nil
+}
+
+func getMetaField(val luaValue, fieldName string, ls *luaState) luaValue {
+	mt := getMetatable(val, ls)
+	if mt == nil {
+		return nil
+	}
+	return mt.get(fieldName)
+}
+
+func callMetamethod(a, b luaValue, mmName string, ls *luaState) (luaValue, bool) {
+	var mm luaValue
+	if mm = getMetaField(a, mmName, ls); mm == nil {
+		if mm = getMetaField(b, mmName, ls); mm == nil {
+			return nil, false
+		}
+	}
+
+	ls.stack.check(4)
+	ls.stack.push(mm)
+	ls.stack.push(a)
+	ls.stack.push(b)
+	ls.Call(2, 1)
+	return ls.stack.pop(), true
 }

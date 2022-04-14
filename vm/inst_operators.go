@@ -19,6 +19,7 @@ func shr(i Instruction, vm LuaVM)  { _binaryArith(i, vm, LUA_OPSHR) }  // >>
 func unm(i Instruction, vm LuaVM)  { _unaryArith(i, vm, LUA_OPUNM) }   // -
 func bnot(i Instruction, vm LuaVM) { _unaryArith(i, vm, LUA_OPBNOT) }  // ~
 
+// R(A) := RK(B) op RK(C)
 func _binaryArith(i Instruction, vm LuaVM, op ArithOp) {
 	a, b, c := i.ABC()
 	a += 1
@@ -29,6 +30,7 @@ func _binaryArith(i Instruction, vm LuaVM, op ArithOp) {
 	vm.Replace(a)
 }
 
+// R(A) := op R(B)
 func _unaryArith(i Instruction, vm LuaVM, op ArithOp) {
 	a, b, _ := i.ABC()
 	a += 1
@@ -40,10 +42,12 @@ func _unaryArith(i Instruction, vm LuaVM, op ArithOp) {
 }
 
 /* compare */
+
 func eq(i Instruction, vm LuaVM) { _compare(i, vm, LUA_OPEQ) } // ==
 func lt(i Instruction, vm LuaVM) { _compare(i, vm, LUA_OPLT) } // <
 func le(i Instruction, vm LuaVM) { _compare(i, vm, LUA_OPLE) } // <=
 
+// if ((RK(B) op RK(C)) ~= A) then pc++
 func _compare(i Instruction, vm LuaVM, op CompareOp) {
 	a, b, c := i.ABC()
 
@@ -55,6 +59,9 @@ func _compare(i Instruction, vm LuaVM, op CompareOp) {
 	vm.Pop(2)
 }
 
+/* logical */
+
+// R(A) := not R(B)
 func not(i Instruction, vm LuaVM) {
 	a, b, _ := i.ABC()
 	a += 1
@@ -64,6 +71,7 @@ func not(i Instruction, vm LuaVM) {
 	vm.Replace(a)
 }
 
+// if not (R(A) <=> C) then pc++
 func test(i Instruction, vm LuaVM) {
 	a, _, c := i.ABC()
 	a += 1
@@ -73,6 +81,7 @@ func test(i Instruction, vm LuaVM) {
 	}
 }
 
+// if (R(B) <=> C) then R(A) := R(B) else pc++
 func testSet(i Instruction, vm LuaVM) {
 	a, b, c := i.ABC()
 	a += 1
@@ -85,6 +94,9 @@ func testSet(i Instruction, vm LuaVM) {
 	}
 }
 
+/* len & concat */
+
+// R(A) := length of R(B)
 func length(i Instruction, vm LuaVM) {
 	a, b, _ := i.ABC()
 	a += 1
@@ -94,6 +106,7 @@ func length(i Instruction, vm LuaVM) {
 	vm.Replace(a)
 }
 
+// R(A) := R(B).. ... ..R(C)
 func concat(i Instruction, vm LuaVM) {
 	a, b, c := i.ABC()
 	a += 1

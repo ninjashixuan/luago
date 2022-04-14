@@ -1,12 +1,10 @@
 package state
 
-import (
-	. "luago/api"
-)
+import . "luago/api"
 
 type luaState struct {
-	stack    *luaStack
 	registry *luaTable
+	stack    *luaStack
 }
 
 func New() *luaState {
@@ -15,7 +13,6 @@ func New() *luaState {
 
 	ls := &luaState{registry: registry}
 	ls.pushLuaStack(newLuaStack(LUA_MINSTACK, ls))
-
 	return ls
 }
 

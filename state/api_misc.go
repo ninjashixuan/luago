@@ -1,10 +1,14 @@
 package state
 
+// [-0, +1, e]
+// http://www.lua.org/manual/5.3/manual.html#lua_len
 func (self *luaState) Len(idx int) {
 	val := self.stack.get(idx)
 
 	if s, ok := val.(string); ok {
 		self.stack.push(int64(len(s)))
+	} else if result, ok := callMetamethod(val, val, "__len", self); ok {
+		self.stack.push(result)
 	} else if t, ok := val.(*luaTable); ok {
 		self.stack.push(int64(t.len()))
 	} else {
@@ -12,6 +16,8 @@ func (self *luaState) Len(idx int) {
 	}
 }
 
+// [-n, +1, e]
+// http://www.lua.org/manual/5.3/manual.html#lua_concat
 func (self *luaState) Concat(n int) {
 	if n == 0 {
 		self.stack.push("")
@@ -23,6 +29,13 @@ func (self *luaState) Concat(n int) {
 				self.stack.pop()
 				self.stack.pop()
 				self.stack.push(s1 + s2)
+				continue
+			}
+
+			a := self.stack.pop()
+			b := self.stack.pop()
+			if result, ok := callMetamethod(a, b, "__concat", self); ok {
+				self.stack.push(result)
 				continue
 			}
 

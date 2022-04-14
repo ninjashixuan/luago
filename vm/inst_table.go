@@ -1,11 +1,11 @@
 package vm
 
-import (
-	. "luago/api"
-)
+import . "luago/api"
 
+/* number of list items to accumulate before a SETLIST instruction */
 const LFIELDS_PER_FLUSH = 50
 
+// R(A) := {} (size = B,C)
 func newTable(i Instruction, vm LuaVM) {
 	a, b, c := i.ABC()
 	a += 1
@@ -14,15 +14,7 @@ func newTable(i Instruction, vm LuaVM) {
 	vm.Replace(a)
 }
 
-func setTable(i Instruction, vm LuaVM) {
-	a, b, c := i.ABC()
-	a += 1
-
-	vm.GetRK(b)
-	vm.GetRK(c)
-	vm.SetTable(a)
-}
-
+// R(A) := R(B)[RK(C)]
 func getTable(i Instruction, vm LuaVM) {
 	a, b, c := i.ABC()
 	a += 1
@@ -33,6 +25,17 @@ func getTable(i Instruction, vm LuaVM) {
 	vm.Replace(a)
 }
 
+// R(A)[RK(B)] := RK(C)
+func setTable(i Instruction, vm LuaVM) {
+	a, b, c := i.ABC()
+	a += 1
+
+	vm.GetRK(b)
+	vm.GetRK(c)
+	vm.SetTable(a)
+}
+
+// R(A)[(C-1)*FPF+i] := R(A+i), 1 <= i <= B
 func setList(i Instruction, vm LuaVM) {
 	a, b, c := i.ABC()
 	a += 1
@@ -56,7 +59,7 @@ func setList(i Instruction, vm LuaVM) {
 		vm.PushValue(a + j)
 		vm.SetI(a, idx)
 	}
-	
+
 	if bIsZero {
 		for j := vm.RegisterCount() + 1; j <= vm.GetTop(); j++ {
 			idx++
@@ -64,6 +67,7 @@ func setList(i Instruction, vm LuaVM) {
 			vm.SetI(a, idx)
 		}
 
+		// clear stack
 		vm.SetTop(vm.RegisterCount())
 	}
 }
