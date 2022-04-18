@@ -84,4 +84,8 @@ type LuaState interface {
 	/* miscellaneous functions */
 	Len(idx int)
 	Concat(n int)
+
+	Next(idx int) bool
+	Error() int
+	PCall(nArgs, nResults, msgh int) int
 }

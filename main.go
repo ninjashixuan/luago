@@ -1,12 +1,9 @@
 package main
 
-import (
-	"fmt"
-	"io/ioutil"
-	. "luago/api"
-	"luago/state"
-	"os"
-)
+import "fmt"
+import "io/ioutil"
+import "os"
+import . "luago/compiler/lexer"
 
 func main() {
 	if len(os.Args) > 1 {
@@ -15,42 +12,39 @@ func main() {
 			panic(err)
 		}
 
-		ls := state.New()
-		ls.Register("print", print)
-		ls.Register("getmetatable", getMetatable)
-		ls.Register("setmetatable", setMetatable)
-		ls.Load(data, os.Args[1], "b")
-		ls.Call(0, 0)
+		testLexer(string(data), os.Args[1])
 	}
 }
 
-func print(ls LuaState) int {
-	nArgs := ls.GetTop()
-	for i := 1; i <= nArgs; i++ {
-		if ls.IsBoolean(i) {
-			fmt.Printf("%t", ls.ToBoolean(i))
-		} else if ls.IsString(i) {
-			fmt.Print(ls.ToString(i))
-		} else {
-			fmt.Print(ls.TypeName(ls.Type(i)))
-		}
-		if i < nArgs {
-			fmt.Print("\t")
+func testLexer(chunk, chunkName string) {
+	lexer := NewLexer(chunk, chunkName)
+	for {
+		line, kind, token := lexer.NextToken()
+		fmt.Printf("[%2d] [%-10s] %s\n",
+			line, kindToCategory(kind), token)
+		if kind == TOKEN_EOF {
+			break
 		}
 	}
-	fmt.Println()
-	return 0
 }
 
-func getMetatable(ls LuaState) int {
-	if !ls.GetMetatable(1) {
-		ls.PushNil()
+func kindToCategory(kind int) string {
+	switch {
+	case kind < TOKEN_SEP_SEMI:
+		return "other"
+	case kind <= TOKEN_SEP_RCURLY:
+		return "separator"
+	case kind <= TOKEN_OP_NOT:
+		return "operator"
+	case kind <= TOKEN_KW_WHILE:
+		return "keyword"
+	case kind == TOKEN_IDENTIFIER:
+		return "identifier"
+	case kind == TOKEN_NUMBER:
+		return "number"
+	case kind == TOKEN_STRING:
+		return "string"
+	default:
+		return "other"
 	}
-
-	return 1
-}
-
-func setMetatable(ls LuaState) int {
-	ls.SetMetatable(1)
-	return 1
 }
