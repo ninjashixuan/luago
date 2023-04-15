@@ -1,8 +1,9 @@
 package state
 
-import "math"
-import . "luago/api"
-import "luago/number"
+import (
+	"github.com/ninjashixuan/luago/number"
+	"math"
+)
 
 type operator struct {
 	metamethod  string // operator metamethod

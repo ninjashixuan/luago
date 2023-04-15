@@ -1,8 +1,5 @@
 package state
 
-import . "luago/api"
-import "luago/binchunk"
-
 type upvalue struct {
 	val *luaValue
 }

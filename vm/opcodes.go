@@ -1,6 +1,6 @@
 package vm
 
-import "luago/api"
+import "github.com/ninjashixuan/luago/api"
 
 /* OpMode */
 /* basic instruction format */

@@ -1,7 +1,5 @@
 package state
 
-import . "luago/api"
-
 type luaState struct {
 	registry *luaTable
 	stack    *luaStack

@@ -1,7 +1,5 @@
 package vm
 
-import . "luago/api"
-
 /* arith */
 
 func add(i Instruction, vm LuaVM)  { _binaryArith(i, vm, LUA_OPADD) }  // +

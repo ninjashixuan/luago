@@ -1,7 +1,5 @@
 package state
 
-import . "luago/api"
-
 // [-0, +0, –]
 // http://www.lua.org/manual/5.3/manual.html#lua_rawequal
 func (self *luaState) RawEqual(idx1, idx2 int) bool {

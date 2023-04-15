@@ -1,7 +1,5 @@
 package vm
 
-import . "luago/api"
-
 // R(A) := UpValue[B]
 func getUpval(i Instruction, vm LuaVM) {
 	a, b, _ := i.ABC()

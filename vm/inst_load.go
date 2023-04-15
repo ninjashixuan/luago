@@ -1,7 +1,5 @@
 package vm
 
-import . "luago/api"
-
 // R(A), R(A+1), ..., R(A+B) := nil
 func loadNil(i Instruction, vm LuaVM) {
 	a, b, _ := i.ABC()

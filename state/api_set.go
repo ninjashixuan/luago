@@ -1,7 +1,5 @@
 package state
 
-import . "luago/api"
-
 // [-2, +0, e]
 // http://www.lua.org/manual/5.3/manual.html#lua_settable
 func (self *luaState) SetTable(idx int) {

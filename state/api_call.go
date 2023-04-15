@@ -1,8 +1,9 @@
 package state
 
-import . "luago/api"
-import "luago/binchunk"
-import "luago/vm"
+import (
+	"github.com/ninjashixuan/luago/binchunk"
+	"github.com/ninjashixuan/luago/vm"
+)
 
 // [-0, +1, –]
 // http://www.lua.org/manual/5.3/manual.html#lua_load

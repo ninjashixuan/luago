@@ -1,7 +1,6 @@
 package state
 
 import "math"
-import "luago/number"
 
 type luaTable struct {
 	metatable *luaTable

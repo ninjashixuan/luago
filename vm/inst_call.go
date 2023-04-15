@@ -1,7 +1,5 @@
 package vm
 
-import . "luago/api"
-
 // R(A+1) := R(B); R(A) := R(B)[RK(C)]
 func self(i Instruction, vm LuaVM) {
 	a, b, c := i.ABC()

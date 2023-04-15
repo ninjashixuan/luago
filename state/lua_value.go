@@ -2,9 +2,8 @@ package state
 
 import (
 	"fmt"
-	. "luago/api"
+	"github.com/ninjashixuan/luago/number"
 )
-import "luago/number"
 
 type luaValue interface{}
 
