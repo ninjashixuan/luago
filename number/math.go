@@ -1,6 +1,9 @@
 package number
 
-import "math"
+import (
+	"fmt"
+	"math"
+)
 
 // todo: correct?
 func FloatToInteger(f float64) (int64, bool) {
@@ -50,4 +53,8 @@ func ShiftRight(a, n int64) int64 {
 	} else {
 		return ShiftLeft(a, -n)
 	}
+}
+
+func UpdateRelease() {
+	fmt.Println("I am new world1")
 }
