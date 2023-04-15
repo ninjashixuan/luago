@@ -57,4 +57,22 @@ func ShiftRight(a, n int64) int64 {
 
 func UpdateRelease() {
 	fmt.Println("I am new world1")
+	fmt.Println("I am new world1")
+	fmt.Println("I am new world1")
+	fmt.Println("I am new world1")
+	fmt.Println("I am new world1")
+	fmt.Println("I am new world1")
+	fmt.Println("I am new world1")
+	fmt.Println("I am new world1")
+	fmt.Println("I am new world1")
+	fmt.Println("I am new world1")
+	fmt.Println("I am new world1")
+	fmt.Println("I am new world1")
+	fmt.Println("I am new world1")
+	fmt.Println("I am new world1")
+	fmt.Println("I am new world1")
+	fmt.Println("I am new world1")
+	fmt.Println("I am new world1")
+	fmt.Println("I am new world1")
+	fmt.Println("I am new world1")
 }
