@@ -56,7 +56,7 @@ func ShiftRight(a, n int64) int64 {
 }
 
 func UpdateRelease() {
-	fmt.Println("我爱你王心凌！！！！！！！！！！！！！！")
+	fmt.Println("love tooooooooooooooooooooo！！！！！！！！！！！！！！")
 	fmt.Println("我爱你王心凌！！！！！！！！！！！！！！")
 	fmt.Println("我爱你王心凌！！！！！！！！！！！！！！")
 	fmt.Println("我爱你王心凌！！！！！！！！！！！！！！")
